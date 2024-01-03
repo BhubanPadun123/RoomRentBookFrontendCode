@@ -1,0 +1,9 @@
+
+export const USER_SIGN_UP_STATUS = "USER_SIGN_UP_STATUS"
+export const USER_SIGN_UP_RESPONSE = "USER_SIGN_UP_RESPONSE"
+export const USER_SIGN_UP_ERROR = "USER_SIGN_UP_ERROR"
+
+//action types for the login user
+export const USER_LOGIN_STATUS = "USER_LOGIN_STATUS"
+export const USER_LOGIN_RESPONSE = "USER_LOGIN_RESPONSE"
+export const USER_LOGIN_ERROR = "USER_LOGIN_ERROR"
