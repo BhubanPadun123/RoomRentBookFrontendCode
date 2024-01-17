@@ -1,11 +1,30 @@
 import React from "react";
-
+import { Tab, Tabs } from "@mui/material"
 import { useNavigate } from "react-router-dom";
 
-import { Button, CheckBox, Img, Input, List, Slider, Text } from "components";
+import { Button, CheckBox, Img, Input, List, Slider, Text,SelectBox } from "components";
 import LandingPageCard from "components/LandingPageCard";
 import LandingPageFooter from "components/LandingPageFooter";
 import LandingPageHeader from "components/LandingPageHeader";
+import DrawerModel from "components/Popover";
+
+const propertyDropdownList = [
+  {label:"House",value:"House"},
+  {label:"Home",value:"Home"},
+  {label:"Land",value:"Land"},
+  {label:"Store",value:"Store"}
+]
+const priceRangeList = [
+  {label:"Rs-500 to 1000",value:"500-1000"},
+  {label:"Rs-1000 to 1500",value:"1000-1500"},
+  {label:"Rs-1500 to 2000",value:"2000-2500"},
+  {label:"Rs-2500 to 3000",value:"2500-3000"},
+  {label:"Rs-3000 to 3500",value:"3500-4000"},
+  {label:"Rs-4000 to 4500",value:"4500-5000"},
+  {label:"Rs-5000 to 5500",value:"5000-5500"},
+  {label:"Rs-5500 to 6000",value:"5500-6000"},
+  {label:"Rs-6000 to more",value:"6000-more"}
+]
 
 const LandingPagePage: React.FC = () => {
   const navigate = useNavigate();
@@ -20,6 +39,23 @@ const LandingPagePage: React.FC = () => {
   ];
   const sliderRef = React.useRef(null);
   const [sliderState, setsliderState] = React.useState(0);
+  const [state,setState] = React.useState({
+    tabValue: 'one',
+    openDrawer : false
+  })
+
+  const handleTabValueChange =(value:any,newValue:string):void=>{
+    setState((prevState)=>({
+      ...prevState,
+      tabValue: newValue,
+    }))
+  }
+  const handleDrawer = ()=> {
+    setState((prevState) => ({
+      ...prevState,
+      openDrawer: !state.openDrawer
+    }))
+  }
 
   return (
     <>
@@ -49,19 +85,39 @@ const LandingPagePage: React.FC = () => {
                   </Text>
                 </div>
                 <div className="bg-white-A700 flex flex-col items-start justify-start p-6 sm:px-5 rounded-[16px] w-full">
-                  <div className="flex flex-col gap-[38px] items-center justify-start w-full">
+                  <div className={`flex flex-col gap-[38px] items-center justify-start w-full bg-blue-${state.tabValue === "one" && 600 } bg-red-${state.tabValue === "two" && 100} bg-deep_orange-${state.tabValue === "three" && 50}`}>
                     <div className="flex sm:flex-col flex-row gap-4 items-center justify-center w-full">
-                      <Button className="bg-gray-900 cursor-pointer flex-1 font-bold py-3 rounded-[10px] text-center text-lg text-white-A700 w-full">
-                        Buy
-                      </Button>
-                      <Button className="bg-gray-300 cursor-pointer flex-1 font-bold py-3 rounded-[10px] text-center text-gray-900 text-lg w-full">
-                        Sell
-                      </Button>
-                      <Button className="bg-gray-300 cursor-pointer flex-1 font-bold py-3 rounded-[10px] text-center text-gray-900 text-lg w-full">
-                        Rent
-                      </Button>
+                      <Tabs
+                         value={state.tabValue}
+                         onChange={handleTabValueChange}
+                      >
+                        <Tab
+                          label={
+                            <Button className={`bg-gray-${state.tabValue === "one" ? 900 : 400} cursor-pointer flex-1 font-bold py-3 rounded-[10px] text-center text-lg text-white-A700 w-full`}>
+                              Buy
+                            </Button>
+                          }
+                          value={"one"}
+                        />
+                        <Tab
+                          label={
+                            <Button className={`bg-gray-${state.tabValue==="two"?900:400} cursor-pointer flex-1 font-bold py-3 rounded-[10px] text-center text-white-A700  text-lg w-full`}>
+                              Sell
+                            </Button>
+                          }
+                          value={"two"}
+                        />
+                        <Tab
+                          label={
+                            <Button className={`bg-gray-${state.tabValue === "three" ? 900 : 400} cursor-pointer flex-1 font-bold py-3 rounded-[10px] text-center text-white-A700 text-lg w-full`}>
+                              Rent
+                            </Button>
+                          }
+                          value={"three"}
+                        />
+                      </Tabs>
                     </div>
-                    <div className="flex flex-col gap-6 items-start justify-start w-full">
+                    <div className={`flex flex-col gap-6 items-start justify-start w-full`}>
                       <div className="flex flex-col gap-5 items-start justify-start w-full">
                         <Input
                           name="textfieldlarge"
@@ -76,32 +132,38 @@ const LandingPagePage: React.FC = () => {
                             />
                           }
                         ></Input>
-                        <Input
-                          name="textfieldlarge_One"
-                          placeholder="Property Type"
-                          className="font-semibold p-0 placeholder:text-gray-600 text-gray-600 text-left text-lg w-full"
-                          wrapClassName="bg-white-A700 border border-bluegray-100 border-solid flex pb-3.5 pt-5 px-4 rounded-[10px] w-full"
-                          suffix={
+                        <SelectBox 
+                          className="bg-white-A700 border border-bluegray-100 border-solid font-bold pb-3.5 pt-[18px] px-4 rounded-[10px] text-gray-700 text-left text-lg w-full"
+                          placeholderClassName="text-gray-700"
+                          indicator={
                             <Img
                               className="mt-auto mb-[5px] h-5 ml-[35px]"
                               src="images/img_sort.svg"
                               alt="sort"
                             />
                           }
-                        ></Input>
-                        <Input
-                          name="textfieldlarge_Two"
-                          placeholder="Price Range"
-                          className="font-semibold p-0 placeholder:text-gray-600 text-gray-600 text-left text-lg w-full"
-                          wrapClassName="bg-white-A700 border border-bluegray-100 border-solid flex pb-3.5 pt-5 px-4 rounded-[10px] w-full"
-                          suffix={
+                          isMulti={true}
+                          name="Property-Type"
+                          options={propertyDropdownList}
+                          isSearchable={true}
+                          placeholder={"Property-Type"}
+                        />                        
+                        <SelectBox 
+                          className="bg-white-A700 border border-bluegray-100 border-solid font-bold pb-3.5 pt-[18px] px-4 rounded-[10px] text-gray-700 text-left text-lg w-full"
+                          placeholderClassName="text-gray-700"
+                          indicator={
                             <Img
                               className="mt-auto mb-[5px] h-5 ml-[35px]"
                               src="images/img_sort.svg"
                               alt="sort"
                             />
                           }
-                        ></Input>
+                          isMulti={true}
+                          name="Price-Range"
+                          options={priceRangeList}
+                          isSearchable={true}
+                          placeholder={"Price-Range"}
+                        />
                       </div>
                       <Button className="bg-gray-900 cursor-pointer font-bold py-[17px] rounded-[10px] text-center text-lg text-white-A700 w-full">
                         Search
@@ -139,7 +201,7 @@ const LandingPagePage: React.FC = () => {
                     typesetting industry.{" "}
                   </Text>
                 </div>
-                <Button className="bg-gray-900 cursor-pointer font-semibold min-w-[138px] py-[13px] rounded-[10px] text-base text-center text-white-A700">
+                <Button className="bg-gray-900 cursor-pointer font-semibold min-w-[138px] py-[13px] rounded-[10px] text-base text-center text-white-A700" onClick={()=> handleDrawer()}>
                   Get Started
                 </Button>
               </div>
@@ -399,7 +461,7 @@ const LandingPagePage: React.FC = () => {
                     welcomed.
                   </Text>
                 </div>
-                <Button className="bg-gray-900 cursor-pointer font-semibold min-w-[138px] py-[13px] rounded-[10px] text-base text-center text-white-A700">
+                <Button className="bg-gray-900 cursor-pointer font-semibold min-w-[138px] py-[13px] rounded-[10px] text-base text-center text-white-A700" onClick={()=> handleDrawer()}>
                   Get Started
                 </Button>
               </div>
@@ -728,6 +790,11 @@ const LandingPagePage: React.FC = () => {
           </div>
         </div>
         <LandingPageFooter className="bg-white-A700 flex gap-2 items-center justify-center md:px-5 px-[120px] py-20 w-full" />
+        <DrawerModel 
+           open = {state.openDrawer}
+           onClose={handleDrawer}
+           anchor={"right"}
+        />
       </div>
     </>
   );
