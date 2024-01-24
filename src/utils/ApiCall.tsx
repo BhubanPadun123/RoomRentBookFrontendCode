@@ -6,8 +6,7 @@ interface apiCallState{
 }
 
 
-const runAxios=async(method:string,path:string,data:any,url:string):Promise<apiCallState>=> {
-    console.log(url,"and==>",data)
+const runAxios=async(method:string,path:string,data:any,url:string,optional?:any):Promise<apiCallState>=> {
     let result = {
         response:[],
         error:[]
@@ -28,7 +27,7 @@ const runAxios=async(method:string,path:string,data:any,url:string):Promise<apiC
             return result;
             break;
         case "post":
-            await axios.post(`${url}/${path}`,data).then((res)=>{
+            await axios.post(`${url}/${path}?${optional}`,data).then((res)=>{
                 result={
                     response:res.data,
                     error:[]
@@ -59,8 +58,8 @@ const runAxios=async(method:string,path:string,data:any,url:string):Promise<apiC
             return result;
     }
 }
-async function makeCall(method:string,path:string|any,data:object|any,url:string|any):Promise<apiCallState>{
-    const {error,response} = await runAxios(method,path,data,url)
+async function makeCall(method:string,path:string|any,data:object|any,url:string|any,optional?:any):Promise<apiCallState>{
+    const {error,response} = await runAxios(method,path,data,url,optional)
     return {
         error,
         response

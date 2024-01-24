@@ -12,8 +12,9 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import { UserSignupAction } from "redux/Action/UserAction";
 import { useDispatch } from "react-redux";
+import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
+import { RoomImgUploadAction,RoomRegisterAction } from "redux/Action/RoomAction";
 
 function Copyright(props: any) {
     return (
@@ -35,36 +36,60 @@ function Copyright(props: any) {
 
 const theme = createTheme();
 
-export default function SignUp() {
+export default function RoomRegister() {
+    const [state, setState] = React.useState({
+        email: "",
+        image: "",
+        room:"",
+        amount:""
+    })
     const dispatch = useDispatch()
-    const isEmail = (email:string) => {
+    const isEmail = (email: string) => {
         // Regular expression to check if the entered email is a valid email address
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         return emailRegex.test(email);
     };
-    const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {        
+    const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         const data = new FormData(event.currentTarget);
         const mailAddress = data.get("email") as string
-        if(!isEmail(mailAddress)){
+        if (!isEmail(mailAddress)) {
             alert("Please enter a valid email address")
         }
         const userData = {
-            firstName: data.get("firstName"),
-            lastName: data.get("lastName"),
             email: data.get("email"),
-            password: data.get("password"),
-            address : data.get("address"),
-            state : data.get("state"),
-            district : data.get("district"),
-            po : data.get("po"),
-            pin : data.get("pin"),
-            contact: data.get("contact")
+            address: data.get("address"),
+            state: data.get("state"),
+            district: data.get("district"),
+            po: data.get("po"),
+            pin: data.get("pin"),
+            room: data.get("room"),
+            amount: data.get("amount")
         }
         if(userData){
-            dispatch(UserSignupAction(userData))
+            dispatch(RoomRegisterAction(userData))
         }
     };
+    const handleImgUpload = (event: any) => {
+        const file = event.target.files[0];
+        setState((prevState) => ({
+            ...prevState,
+            image: file
+        }))
+        const formData = new FormData();
+        formData.append('image', file);
+        const imageData = [{
+            owner: state.email,
+            formData: event.target.files[0]
+        }]
+        dispatch(RoomImgUploadAction(formData,state.email))
+    }
+    const handleEmailChange = (e: any) => {
+        setState((prevState) => ({
+            ...prevState,
+            email: e.target.value
+        }))
+    }
 
     return (
         <ThemeProvider theme={theme}>
@@ -91,27 +116,6 @@ export default function SignUp() {
                         sx={{ mt: 3 }}
                     >
                         <Grid container spacing={2}>
-                            <Grid item xs={12} sm={6}>
-                                <TextField
-                                    autoComplete="given-name"
-                                    name="firstName"
-                                    required
-                                    fullWidth
-                                    id="firstName"
-                                    label="First Name"
-                                    autoFocus
-                                />
-                            </Grid>
-                            <Grid item xs={12} sm={6}>
-                                <TextField
-                                    required
-                                    fullWidth
-                                    id="lastName"
-                                    label="Last Name"
-                                    name="lastName"
-                                    autoComplete="family-name"
-                                />
-                            </Grid>
                             <Grid item xs={12}>
                                 <TextField
                                     required
@@ -121,17 +125,7 @@ export default function SignUp() {
                                     name="email"
                                     autoComplete="email"
                                     type="email"
-                                />
-                            </Grid>
-                            <Grid item xs={12}>
-                                <TextField
-                                    required
-                                    fullWidth
-                                    id="contact"
-                                    label="ContactNumber"
-                                    name="contact"
-                                    autoComplete="contact"
-                                    type="number"
+                                    onChange={(e) => { handleEmailChange(e) }}
                                 />
                             </Grid>
                             <Grid item xs={12}>
@@ -139,12 +133,13 @@ export default function SignUp() {
                                     required
                                     fullWidth
                                     id="address"
-                                    label="Full Address"
+                                    label="Full Address with House-No"
                                     name="address"
                                     autoComplete="address"
                                     type="text"
                                 />
-                            </Grid><Grid item xs={12}>
+                            </Grid>
+                            <Grid item xs={12}>
                                 <TextField
                                     required
                                     fullWidth
@@ -164,7 +159,7 @@ export default function SignUp() {
                                     autoComplete="district"
                                     type="text"
                                 />
-                            </Grid>                            
+                            </Grid>
                             <Grid item xs={12}>
                                 <TextField
                                     required
@@ -175,7 +170,8 @@ export default function SignUp() {
                                     autoComplete="po"
                                     type="text"
                                 />
-                            </Grid><Grid item xs={12}>
+                            </Grid>
+                            <Grid item xs={12}>
                                 <TextField
                                     required
                                     fullWidth
@@ -187,23 +183,55 @@ export default function SignUp() {
                                 />
                             </Grid>
                             <Grid item xs={12}>
-                                <TextField
-                                    required
-                                    fullWidth
-                                    name="password"
-                                    label="Password"
-                                    type="password"
-                                    id="password"
-                                    autoComplete="new-password"
-                                />
+                                <FormControl fullWidth>
+                                    <InputLabel>Select from Size</InputLabel>
+                                    <Select
+                                        label="Select from Size"
+                                        required
+                                        id="room"
+                                        name="room"
+                                        autoComplete="room"
+                                        value={state.room}
+                                        onChange={(e)=>{
+                                            setState((prevState) => ({...prevState,room:e.target.value}))
+                                        }}
+                                    >
+                                        {
+                                            ["Single-Room", "Double-Room", "1BHK", "2BHK", "3BHK"].map((item, idx) => {
+                                                return (
+                                                    <MenuItem key={idx} value={item} >{item}</MenuItem>
+                                                )
+                                            })
+                                        }
+                                    </Select>
+                                </FormControl>
                             </Grid>
                             <Grid item xs={12}>
-                                <FormControlLabel
-                                    control={
-                                        <Checkbox value="allowExtraEmails" color="primary" />
-                                    }
-                                    label="I want to receive inspiration, marketing promotions and updates via email."
-                                />
+                                <FormControl fullWidth>
+                                    <InputLabel>Rent/Month</InputLabel>
+                                    <Select
+                                        label="Rent/Month"
+                                        required
+                                        id="amount"
+                                        name="amount"
+                                        autoComplete="amount"
+                                        value={state.amount}
+                                        onChange={(e) => {
+                                            setState((prevState) => ({...prevState,amount:e.target.value}))
+                                        }}
+                                    >
+                                        {
+                                            ["1K", "1.5K", "2K", "2.5K", "3K", "3.5K", "4K", "4.5K"].map((item, idx) => {
+                                                return (
+                                                    <MenuItem key={idx} value={item} >{item}</MenuItem>
+                                                )
+                                            })
+                                        }
+                                    </Select>
+                                </FormControl>
+                            </Grid>
+                            <Grid item xs={12}>
+                                <input type="file" name="image" accept="image/*" required id="img" autoComplete="img" onChange={(e) => handleImgUpload(e)} />
                             </Grid>
                         </Grid>
                         <Button
@@ -212,18 +240,10 @@ export default function SignUp() {
                             variant="contained"
                             sx={{ mt: 3, mb: 2 }}
                         >
-                            Sign Up
+                            Post
                         </Button>
-                        <Grid container justifyContent="flex-end">
-                            <Grid item>
-                                <Link href="#" variant="body2">
-                                    Already have an account? Sign in
-                                </Link>
-                            </Grid>
-                        </Grid>
                     </Box>
                 </Box>
-                <Copyright sx={{ mt: 5 }} />
             </Container>
         </ThemeProvider>
     );

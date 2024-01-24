@@ -1,8 +1,11 @@
 import React from "react";
 import DrawerModel from "components/Popover";
 import { Button, Img, List, Text } from "components";
-import { IconButton } from "@mui/material"
+import { Box, Divider, Drawer, IconButton, ListItem, ListItemButton, ListItemIcon, Typography } from "@mui/material"
 import Dropdown from "pages/Dropdown";
+import { useNavigate } from "react-router-dom"
+import MenuIcon from '@mui/icons-material/Menu';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 
 type LandingPageHeaderProps = React.DetailedHTMLProps<
   React.HTMLAttributes<HTMLDivElement>,
@@ -11,36 +14,92 @@ type LandingPageHeaderProps = React.DetailedHTMLProps<
   Partial<{}>;
 
 const LandingPageHeader: React.FC<LandingPageHeaderProps> = (props) => {
-  const [state,setState] = React.useState({
-    openSearch:false,
+  const router = useNavigate()
+  const [state, setState] = React.useState({
+    openSearch: false,
     HomeMenu: [
-      {label:"About",value:"aboutus"},
-      {label:"Agent List",value:"agentlist"},
-      {label:"Property List",value:"listing"},
-      {label:"Recent Post",value:"blogpage"},
-      {label:"Privacy Policy",value:"privacypolicy"},
-      {label:"License",value:"license"}
+      { label: "Home", value: "" },
+      { label: "About", value: "aboutus" },
+      { label: "Agent List", value: "agentlist" },
+      { label: "Property List", value: "listing" },
+      { label: "Recent Post", value: "blogpage" },
+      { label: "Privacy Policy", value: "privacypolicy" },
+      { label: "License", value: "license" }
     ],
-    dropdownLocation:{
+    dropdownLocation: {
       axisX: null,
-      axisY : null
+      axisY: null
     },
-    homeClick : false,
-    anchorEl : null,
-    openDrawer : false
+    homeClick: false,
+    anchorEl: null,
+    openDrawer: false,
+    openMenu: false
   })
-  const handleItemClick =(e:any)=>{
-    setState((prevState:any) => ({
+  const handleItemClick = (e: any) => {
+    setState((prevState: any) => ({
       ...prevState,
       homeClick: false,
-      anchorEl : null
+      anchorEl: null
     }))
   }
-  const handleDrawer = ()=> {
+  const handleDrawer = () => {
     setState((prevState) => ({
       ...prevState,
       openDrawer: !state.openDrawer
     }))
+  }
+  type position = 'top' | 'bottom' | 'left' | 'right'
+  const toggleDrawer =
+    (anchor: position, open: boolean) =>
+      (event: React.KeyboardEvent | React.MouseEvent) => {
+        if (
+          event.type === 'keydown' &&
+          ((event as React.KeyboardEvent).key === 'Tab' ||
+            (event as React.KeyboardEvent).key === 'Shift')
+        ) {
+          return;
+        }
+
+        setState({ ...state, openMenu: open });
+      };
+  const MenuList = (position: position) => {
+    return (
+      <Box
+        sx={{ width: position === 'left' || position === 'right' ? 250 : 'auto' }}
+        role={"presentation"}
+        onClick={toggleDrawer("right", false)}
+        onKeyDown={toggleDrawer('left', false)}
+      >
+        <List>
+          <div style={{
+            width:"100%",
+            height:"30%",
+            textAlign:"center"
+          }}
+          onClick={()=> router("/profile")}
+          >
+            <IconButton>
+              <AccountCircleIcon sx={{color:"red"}} />
+            </IconButton>
+            <Typography>Bhuban Padun</Typography>
+          </div>
+          <Divider />
+          {
+            state.HomeMenu.map((item, idx) => {
+              return (
+                <ListItem disablePadding>
+                  <ListItemButton key={idx} onClick={()=> router(`/${item.value}`)}>
+                    <ListItemIcon>
+                      <Typography variant="h6">{item.label}</Typography>
+                    </ListItemIcon>
+                  </ListItemButton>
+                </ListItem>
+              )
+            })
+          }
+        </List>
+      </Box>
+    )
   }
   return (
     <>
@@ -65,126 +124,39 @@ const LandingPageHeader: React.FC<LandingPageHeaderProps> = (props) => {
             </div>
           </div>
           <div className="flex sm:flex-1 sm:flex-col flex-row sm:hidden items-center justify-between w-[492px] sm:w-full">
-            <List
-              className="sm:flex-col flex-row gap-10 grid grid-cols-3"
-              orientation="horizontal"
-            >
-              <div className="flex flex-row gap-1.5 items-start justify-start w-[77px]">
-                <IconButton sx={{ display: "flex", gap: "2px" }}
-                   onClick={(e: any)=> {
-                    const {clientX,clientY} = e                    
-                    setState((prevState: any) => ({
-                      ...prevState,
-                      homeClick: !state.homeClick,
-                      dropdownLocation:{
-                        axisX: clientX,
-                        axisY: clientY + 100
-                      },
-                      anchorEl: e.currentTarget
-                    }))
-                   }}
-                >
-                  <Text
-                    className="text-base text-gray-900 w-auto"
-                    size="txtManropeSemiBold16"
-                  >
-                    Home
-                  </Text>
-                  <Img
-                    className="h-4 w-4"
-                    src="images/img_arrowdown_gray_600.svg"
-                    alt="arrowdown"
-                  />
-                </IconButton>
-                {
-                  state.homeClick &&
-                  <Dropdown 
-                    options={state.HomeMenu} 
-                    onChange={handleItemClick} 
-                    axisX={state.dropdownLocation.axisX} 
-                    axisY={state.dropdownLocation.axisY} 
-                    isOpen = {state.homeClick}
-                    anchorEl = {state.anchorEl}
-                  />
-                }
-              </div>
-              <div className="flex flex-row gap-1.5 items-start justify-start w-[77px]">
-                <IconButton sx={{ display: "flex", gap: "2px" }}>
-                  <Text
-                    className="text-base text-gray-900 w-auto"
-                    size="txtManropeSemiBold16"
-                  >
-                    Listing
-                  </Text>
-                  <Img
-                    className="h-4 w-4"
-                    src="images/img_arrowdown_gray_600.svg"
-                    alt="arrowdown"
-                  />
-                </IconButton>
-              </div>
-              <div className="flex flex-row gap-1.5 items-start justify-start w-[77px]">
-                <IconButton sx={{ display: "flex", gap: '2px' }}>
-                  <Text
-                    className="text-base text-gray-900 w-auto"
-                    size="txtManropeSemiBold16"
-                  >
-                    Agents
-                  </Text>
-                  <Img
-                    className="h-4 w-4"
-                    src="images/img_arrowdown_gray_600.svg"
-                    alt="arrowdown"
-                  />
-                </IconButton>
-              </div>
-            </List>
-            <IconButton>
-              <Text
-                className="text-base text-center text-gray-900 w-auto"
-                size="txtManropeSemiBold16"
-              >
-                Property{" "}
-              </Text>
-            </IconButton>
-            <IconButton>
-              <Text
-                className="text-base text-gray-900 w-auto"
-                size="txtManropeSemiBold16"
-              >
-                Blog
-              </Text>
-            </IconButton>
+                     
+            
           </div>
-          <div className="flex flex-row gap-10 h-[42px] md:h-auto sm:hidden items-center justify-start w-[228px]">
-            <Button
-              className="bg-transparent cursor-pointer flex items-center justify-center min-w-[94px]"
-              leftIcon={
-                <IconButton>
-                  <Img
-                    className="h-6 mb-px mr-2"
-                    src="images/img_search.svg"
-                    alt="search"
-                  />
-                </IconButton>
-              }
+          <div className="flex flex-row gap-10 h-[42px] md:h-auto sm:hidden items-center justify-start w-[340px]">
+            <Button className="bg-gray-900 cursor-pointer font-manrope font-semibold py-2.5 rounded-[10px] text-base text-center text-white-A700 w-full"
+              onClick={() => router("/roomRegister")}
             >
-              <div className="font-bold font-manrope text-gray-900 text-left text-lg">
-                Search
-              </div>
+              Post
             </Button>
             <Button className="bg-gray-900 cursor-pointer font-manrope font-semibold py-2.5 rounded-[10px] text-base text-center text-white-A700 w-full"
-              onClick={()=>handleDrawer()}
+              onClick={() => handleDrawer()}
             >
               Log in
             </Button>
+            <IconButton onClick={() => { setState({ ...state, openMenu: true }) }}>
+              <MenuIcon />
+            </IconButton>
           </div>
         </div>
-        <DrawerModel 
-           open = {state.openDrawer}
-           onClose={handleDrawer}
-           anchor={"left"}
+        <DrawerModel
+          open={state.openDrawer}
+          onClose={handleDrawer}
+          anchor={"left"}
         />
+        <Drawer
+          anchor='right'
+          open={state.openMenu}
+          onClose={toggleDrawer("right", false)}
+        >
+          {
+            MenuList("right")
+          }
+        </Drawer>
       </header>
     </>
   );

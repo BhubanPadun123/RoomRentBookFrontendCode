@@ -98,10 +98,21 @@ const DrawerModel: React.FC<PopoverProps> = (props) => {
               <input className="text-sm w-full px-4 py-2 border border-solid border-gray-300 rounded" type="text" placeholder="Email Address" 
                  value={state.email}
                  onChange={(e)=>{
-                  handleChange("email",e)
+                  setState((prevState)=>({
+                    ...prevState,
+                    email:e.target.value
+                  }))
                  }}
               />
-              <input className="text-sm w-full px-4 py-2 border border-solid border-gray-300 rounded mt-4" type="password" placeholder="Password" />
+              <input className="text-sm w-full px-4 py-2 border border-solid border-gray-300 rounded mt-4" type="password" placeholder="Password"
+                 value={state.password}
+                 onChange={(e)=>{
+                  setState((prevState)=>({
+                    ...prevState,
+                    password:e.target.value
+                  }))
+                 }}
+              />
               <div className="mt-4 flex justify-between font-semibold text-sm">
                 <label className="flex text-slate-500 hover:text-slate-600 cursor-pointer">
                   <input className="mr-1" type="checkbox" />

@@ -11,7 +11,7 @@ const initialState:UserState = {
     response:[],
     error:""
 }
-const LoginAction = {type:actionTypes.USER_LOGIN_STATUS} || {type:actionTypes.USER_LOGIN_RESPONSE} || {type:actionTypes.USER_LOGIN_ERROR}
+const LoginAction = {type:actionTypes.USER_LOGIN_STATUS,payload:{}} || {type:actionTypes.USER_LOGIN_RESPONSE,payload:{}} || {type:actionTypes.USER_LOGIN_ERROR,payload:{}}
 
 export const UserLoginReducer=(state:UserState = initialState,action = LoginAction):UserState=>{
     switch(action.type){
@@ -26,7 +26,7 @@ export const UserLoginReducer=(state:UserState = initialState,action = LoginActi
         case actionTypes.USER_LOGIN_RESPONSE:
             state= {
                 status:"success",
-                response:[],
+                response:action.payload,
                 error:""
             }
             return state;
@@ -35,7 +35,7 @@ export const UserLoginReducer=(state:UserState = initialState,action = LoginActi
             state= {
                 status:"failed",
                 response:[],
-                error:[]
+                error:action.payload
             }
             return state;
             break;
@@ -44,7 +44,7 @@ export const UserLoginReducer=(state:UserState = initialState,action = LoginActi
     }
 }
 
-const SignupAction = {type:actionTypes.USER_SIGN_UP_STATUS} || {type:actionTypes.USER_SIGN_UP_RESPONSE} || {type:actionTypes.USER_SIGN_UP_ERROR}
+const SignupAction = {type:actionTypes.USER_SIGN_UP_STATUS,payload:{}} || {type:actionTypes.USER_SIGN_UP_RESPONSE,payload:{}} || {type:actionTypes.USER_SIGN_UP_ERROR,payload:{}}
 
 export const UserSignupReducer = (state:UserState = initialState,action=SignupAction):UserState => {
     switch(action.type){
@@ -59,7 +59,7 @@ export const UserSignupReducer = (state:UserState = initialState,action=SignupAc
         case actionTypes.USER_SIGN_UP_RESPONSE:
             state={
                 status:"success",
-                response:[],
+                response:action.payload,
                 error:""
             }
             return state;
@@ -68,7 +68,7 @@ export const UserSignupReducer = (state:UserState = initialState,action=SignupAc
             state = {
                 status: "failed",
                 response:[],
-                error:[]
+                error:action.payload
             }
             return state;
             break;

@@ -23,7 +23,7 @@ type selectOptionType = Omit<
 
 
 const Dropdown: React.FC<selectOptionType> = (props) => {
-    const navigation = useNavigate()
+    const navigation = useNavigate() 
     return (
         <React.Fragment>
             <Popover
@@ -40,7 +40,7 @@ const Dropdown: React.FC<selectOptionType> = (props) => {
                             <MenuItem 
                                key={key} 
                                onClick={() => {
-                                navigation(`${item.value}`)
+                                navigation(`/${item.value}`)
                                 props.onChange("")
                             }}
                             >
